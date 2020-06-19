@@ -1,0 +1,71 @@
+#include <iostream>
+#include <cstdio>
+#include <string>
+#include <algorithm>
+using namespace std;
+string strs[11];
+bool cmp(string str1, string str2){
+    for(int i = 0; str1[i] !='\0'; i++){
+        if(str2[i] == '\0'){
+            return false;
+        }
+        if(str1[i] > str2[i]){
+            return false;
+        }else if(str1[i] < str2[i]){
+            return true;
+        }
+    }
+    return false;
+}
+int main(void){
+    int n;
+    while(scanf("%d", &n) != EOF){
+        if(n == 0){
+            break;
+        }
+        for(int i = 0; i < n; i++){
+            cin>>strs[i];
+        }
+        sort(strs, strs+n, cmp);
+        int sp = 0;
+        for(int i = 0; strs[0][i] != '\0';i++){
+            if(sp != 0){
+                for(int j = 0; j < sp; j++)
+                    printf("  ");
+            }
+            for(i;strs[0][i] != '\\' && strs[0][i] != '\0'; i++){
+                printf("%c", strs[0][i]);
+            }
+            printf("\n");
+            sp++;
+        }
+        for(int i = 1; i < n; i++){
+            int j = 0;
+            sp = 0;
+            for(j = 0; strs[i-1][j] != '\0' && strs[i][j] != '\0'; j++){
+                if(strs[i-1][j] != strs[i][j]){
+                    break;
+                }
+                if(strs[i][j] != '\\'){
+                    printf("  ");
+                    sp++;
+                }
+            }
+            int p = 0;
+            for(j; strs[i][j] != '\0'; j++){
+                if(p != 0){
+                    for(int t = 0; t < sp; t++)
+                        printf("  ");
+                }
+                for(j;strs[i][j] != '\\' && strs[i][j] != '\0'; j++){
+                    printf("%c", strs[i][j]);
+                }
+                printf("\n");
+                sp++;
+                p = 1;
+            }
+        }
+        printf("\n");
+    }
+    return 0;
+}

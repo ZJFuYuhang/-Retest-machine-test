@@ -1,0 +1,133 @@
+#include <iostream>
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+struct Country{
+    int id;
+    int go_n;
+    int sum;
+    int pop;
+    int ord[5];
+};
+
+bool cmp1(Country* x, Country* y){
+    return x->go_n > y->go_n;
+}
+bool cmp2(Country* x, Country* y){
+    return x->sum > y->sum;
+}
+bool cmp3(Country* x, Country* y){
+    if(x->go_n == 0 && y->go_n == 0)
+        return true;
+    if(x->go_n == 0 && y->go_n != 0){
+        return false;
+    }
+    if(x->go_n != 0 && y->go_n == 0){
+        return true;
+    }
+    if(x->pop == 0 && y->pop == 0){
+        return true;
+    }
+    if(x->pop != 0 && y->pop == 0){
+        return false;
+    }
+    if(x->pop == 0 && y->pop != 0){
+        return true;
+    }
+    return (x->go_n/(float)x->pop) >= (y->go_n/(float)y->pop);
+}
+bool cmp4(Country* x, Country* y){
+    if(x->sum == 0 && y->sum == 0)
+        return true;
+    if(x->sum == 0 && y->sum != 0){
+        return false;
+    }
+    if(x->sum != 0 && y->sum == 0){
+        return true;
+    }
+    if(x->pop == 0 && y->pop == 0){
+        return true;
+    }
+    if(x->pop != 0 && y->pop == 0){
+        return false;
+    }
+    if(x->pop == 0 && y->pop != 0){
+        return true;
+    }
+    return (x->sum/(float)x->pop) >= (y->sum/(float)y->pop);
+}
+int main(void){
+    int M = 0;
+    Country** Marr = NULL;
+    Country** Carr = NULL;
+    int N =0;
+    while(scanf("%d %d", &N, &M) != EOF){
+        if(N == 0){
+            for(int i = 0; i < M; i++){
+                printf("\n");
+            }
+            break;
+        }
+        Carr = new Country*[N];
+        Marr = new Country*[M];
+        for(int i = 0; i < N; i++){
+            Carr[i] = new Country;
+        }
+        for(int i = 0; i < N; i++){
+            scanf("%d %d %d", &Carr[i]->go_n, &Carr[i]->sum, &Carr[i]->pop);
+            Carr[i]->id = i;
+        }
+        for(int i = 0; i < M; i++){
+            int j = 0;
+            scanf("%d", &j);
+            Marr[i] = Carr[j];
+        }
+        sort(Carr, Carr+N, cmp1);
+        for(int i = 0; i < N; i++){
+            if(i != 0 && Carr[i]->go_n == Carr[i-1]->go_n){
+                Carr[i]->ord[0] = Carr[i-1]->ord[0];
+            }else{
+                Carr[i]->ord[0] = i+1;
+            }
+        }
+        sort(Carr, Carr+N, cmp2);
+        for(int i = 0; i < N; i++){
+            if(i != 0 && Carr[i]->sum == Carr[i-1]->sum){
+                Carr[i]->ord[1] = Carr[i-1]->ord[1];
+            }else{
+                Carr[i]->ord[1] = i+1;
+            }
+        }
+        sort(Carr, Carr+N, cmp3);
+        for(int i = 0; i < N; i++){
+            if(i != 0 && (Carr[i]->go_n/(float)Carr[i]->pop) == (Carr[i-1]->go_n/(float)Carr[i-1]->pop)){
+                Carr[i]->ord[2] = Carr[i-1]->ord[2];
+            }else{
+                Carr[i]->ord[2] = i+1;
+            }
+        }
+        sort(Carr, Carr+N, cmp4);
+        for(int i = 0; i < N; i++){
+            if(i != 0 && (Carr[i]->sum/(float)Carr[i]->pop) == (Carr[i-1]->sum/(float)Carr[i-1]->pop)){
+                Carr[i]->ord[3] = Carr[i-1]->ord[3];
+            }else{
+                Carr[i]->ord[3] = i+1;
+            }
+        }
+        for(int i = 0; i < N; i++){
+            int maxo = 0;
+            Carr[i]->ord[4] = 0;
+            for(int j = 1; j < 4; j++){
+                if(Carr[i]->ord[j] < Carr[i]->ord[maxo]){
+                    maxo = j;
+                    Carr[i]->ord[4] = j;
+                }
+            }
+        }
+        for(int i = 0; i < M; i++){
+            printf("%d:%d\n", Marr[i]->ord[Marr[i]->ord[4]],Marr[i]->ord[4]+1);
+        }
+        printf("\n");
+    }
+    return 0;
+}

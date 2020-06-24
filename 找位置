@@ -1,0 +1,80 @@
+#include <iostream>
+#include <string>
+using namespace std;
+ 
+class posNode
+{
+public:
+    char origin;
+    int pos;
+    posNode *next;
+ 
+    posNode(char aOrigin , int aPos)
+    {
+        origin = aOrigin;
+        pos = aPos;
+        next = NULL;
+    }
+};
+ 
+class charNode
+{
+public:
+    int count;
+    posNode *next;
+    bool flag;
+    charNode()
+    {
+        count = 0;
+        next = NULL;
+        flag = true;
+    }
+ 
+};
+ 
+int main()
+{
+    string a;
+    int i;
+    charNode *p = new charNode [128];
+    while(cin>>a)
+    {
+        for(i=0;i<a.size();i++)
+        {
+            posNode *q = p[ a[i] ].next;
+            if(q == NULL)
+            {
+                p[ a[i] ].next = new posNode(a[i],i);
+            }
+            else
+            {
+                while(q->next != NULL)
+                    q=q->next;
+                posNode *newNode = new posNode(a[i],i);
+                q->next = newNode;
+            }
+            p[ int(a[i]) ].count ++;
+        }
+ 
+        for(i=0;i<a.size();i++)
+        {
+            if( p[a[i]].count >=2 && p[a[i]].flag)
+            {
+                int flag = 0;
+                p[a[i]].flag = false;
+                posNode *q = p[a[i]].next;
+                while(q!= NULL)
+                {
+                    if(flag)
+                        cout<<",";
+                    else
+                        flag = 1;
+                    cout<<q->origin<<":"<<q->pos;
+                    q= q->next;
+                }
+                cout<<endl;
+            }
+        }
+    }
+        return 0;
+}
